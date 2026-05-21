@@ -4,6 +4,7 @@ import Remarkable from 'remarkable';
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup'
 import Button from 'react-bootstrap/lib/Button'
+import FaDownload from 'react-icons/lib/fa/download'
 
 import ParseResult from '../models/ParseResult.jsx';
 
@@ -62,6 +63,16 @@ export default class ResultView extends React.Component {
         });
     }
 
+    download() {
+        const element = document.createElement('a');
+        const file = new Blob([this.state.text], { type: 'text/markdown' });
+        element.href = URL.createObjectURL(file);
+        element.download = 'converted.md';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    }
+
     render() {
         const remarkable = new Remarkable({
             breaks: true,
@@ -89,6 +100,12 @@ export default class ResultView extends React.Component {
                   </Button>
                   <Button onClick={ this.switchToPreview.bind(this) } className={ preview ? 'active' : '' }>
                     Preview
+                  </Button>
+                </ButtonGroup>
+
+                <ButtonGroup bsSize="medium" className="pull-right">
+                  <Button onClick={ this.download.bind(this) } bsStyle="primary">
+                    <FaDownload /> Download .md
                   </Button>
                 </ButtonGroup>
               </ButtonToolbar>
