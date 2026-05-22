@@ -5,6 +5,7 @@ import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup'
 import Button from 'react-bootstrap/lib/Button'
 import FaDownload from 'react-icons/lib/fa/download'
+import FaClipboard from 'react-icons/lib/fa/clipboard'
 
 import ParseResult from '../models/ParseResult.jsx';
 
@@ -41,7 +42,8 @@ export default class ResultView extends React.Component {
         });
         this.state = {
             preview: true,
-            text: text
+            text: text,
+            copied: false
         };
     }
 
@@ -71,6 +73,20 @@ export default class ResultView extends React.Component {
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element);
+    }
+
+    copyToClipboard() {
+        const textArea = document.createElement('textarea');
+        textArea.value = this.state.text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+
+        this.setState({ copied: true });
+        setTimeout(() => {
+            this.setState({ copied: false });
+        }, 2000);
     }
 
     render() {
@@ -104,6 +120,9 @@ export default class ResultView extends React.Component {
                 </ButtonGroup>
 
                 <ButtonGroup bsSize="medium" className="pull-right">
+                  <Button onClick={ this.copyToClipboard.bind(this) } bsStyle={ this.state.copied ? 'success' : 'default' }>
+                    <FaClipboard /> { this.state.copied ? 'Copied!' : 'Copy' }
+                  </Button>
                   <Button onClick={ this.download.bind(this) } bsStyle="primary">
                     <FaDownload /> Download .md
                   </Button>
