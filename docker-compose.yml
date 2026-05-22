@@ -1,0 +1,13 @@
+services:
+  pdf-to-markdown:
+    build: .
+    container_name: pdf-to-markdown-app
+    restart: always
+    ports:
+      - "9000:80"
+    networks:
+      - portal_network
+
+networks:
+  portal_network:
+    driver: bridge
